@@ -32,7 +32,8 @@
 //! [thepaper]: https://hal.science/hal-00678543/document
 
 use ndarray::{s, Array1, Array2, ArrayViewMut1, ArrayViewMut2, Zip};
-use num::{integer::gcd, Integer, One, Signed, Zero};
+use num_integer::{gcd, Integer};
+use num_traits::{One, Signed, Zero};
 use std::error::Error;
 use std::fmt;
 use std::ops::{AddAssign, Div, DivAssign, Mul, Neg, Sub};

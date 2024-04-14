@@ -1,6 +1,6 @@
 [package]
 name = "fractionfree"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license-file = "LICENSE.md"
 description = "Fraction-free linear algebra for ndarray"
@@ -10,4 +10,5 @@ categories = ["algorithms", "mathematics" ]
 
 [dependencies]
 ndarray = "0.15.6"
-num = "0.4.2"
+num-integer = "0.1.46"
+num-traits = "0.2.18"
