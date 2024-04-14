@@ -1,7 +1,6 @@
 # Fraction-free linear algebra
 
-See the top-of-the-file comment [in ´lib.rs`](./src/lib.rs) for what this
-is about.
+See [the documentation](https://docs.rs/fractionfree) for what this is about.
 
 This code is licensed under the Hippocratic License Version 3.0. Check [the
 license](./LICENSE.md) for details, or click the badge:
