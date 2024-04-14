@@ -11,7 +11,7 @@
 //! - matrix [inverses](LU::inverse), and
 //! - [determinant](LU::determinant)s
 //!
-//! are implemented. 
+//! are implemented.
 //!
 //! Trait bounds placed on entry types of matrices are as loose as reasonably possible, hence this
 //! library should in principle be applicable for every integral domain. However, the various

@@ -2,6 +2,11 @@
 name = "fractionfree"
 version = "0.1.0"
 edition = "2021"
+license-file = "LICENSE.md"
+description = "Fraction-free linear algebra for ndarray"
+repository = "https://github.com/carlhammann/fractionfree"
+keywords = ["ndarray", "linear-algebra", "matrix", "integer" ]
+categories = ["algorithms", "mathematics" ]
 
 [dependencies]
 ndarray = "0.15.6"
