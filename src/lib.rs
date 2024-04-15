@@ -330,7 +330,7 @@ where
 /// * `denominators` must be an `n`-vector of non-zero `Integer`s
 ///
 /// We interpret these two data together as the rational matrix `diag(denominators)^(-1)
-/// numerators`. That is: the `i´-th row of `numerators` is divided by the `i`-entry of of
+/// numerators`. That is: the `i`-th row of `numerators` is divided by the `i`-entry of of
 /// `denominators`.
 ///
 /// This function divides each row of `numerators` and its corresponding entry in `denominators` by
