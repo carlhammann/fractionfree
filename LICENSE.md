@@ -2,7 +2,7 @@
 
 **Version 3.0, October 2021**
 
-<https://firstdonoharm.dev/version/3/0/cl-eco-extr-law-media-mil-sv.md>
+<https://firstdonoharm.dev/version/3/0/eco-extr-law-media-mil-sv.md>
 
 **TERMS AND CONDITIONS**
 
@@ -117,16 +117,14 @@ _This section identifies additional individuals or entities that a Licensee coul
 
 [8.2.](#8.2) _Equitable Relief_: Licensor and any Supply Chain Impacted Party shall be entitled to equitable relief, including injunctive relief or specific performance of the terms hereof, in addition to any other remedy to which they are entitled at law or in equity.
 
-[8.3.](#8.3) _Copyleft_: Modified software, source code, or other derivative work must be licensed, in its entirety, under the exact same conditions as this License.
+[8.3.](#8.3) _Severability_: If any term or provision of this License is determined to be invalid, illegal, or unenforceable by a court of competent jurisdiction, any such determination of invalidity, illegality, or unenforceability shall not affect any other term or provision of this License or invalidate or render unenforceable such term or provision in any other jurisdiction. If the determination of invalidity, illegality, or unenforceability by a court of competent jurisdiction pertains to the terms or provisions contained in the Ethical Standards section of this License, all rights in the Software granted to Licensee shall be deemed null and void as between Licensor and Licensee.
 
-[8.4.](#8.4) _Severability_: If any term or provision of this License is determined to be invalid, illegal, or unenforceable by a court of competent jurisdiction, any such determination of invalidity, illegality, or unenforceability shall not affect any other term or provision of this License or invalidate or render unenforceable such term or provision in any other jurisdiction. If the determination of invalidity, illegality, or unenforceability by a court of competent jurisdiction pertains to the terms or provisions contained in the Ethical Standards section of this License, all rights in the Software granted to Licensee shall be deemed null and void as between Licensor and Licensee.
+[8.4.](#8.4) _Section Titles_: Section titles are solely written for organizational purposes and should not be used to interpret the language within each section.
 
-[8.5.](#8.5) _Section Titles_: Section titles are solely written for organizational purposes and should not be used to interpret the language within each section.
+[8.5.](#8.5) _Citations_: Citations are solely written to provide context for the source of the provisions in the Ethical Standards.
 
-[8.6.](#8.6) _Citations_: Citations are solely written to provide context for the source of the provisions in the Ethical Standards.
+[8.6.](#8.6) _Section Summaries_: Some sections have a brief _italicized description_ which is provided for the sole purpose of briefly describing the section and should not be used to interpret the terms of the License.
 
-[8.7.](#8.7) _Section Summaries_: Some sections have a brief _italicized description_ which is provided for the sole purpose of briefly describing the section and should not be used to interpret the terms of the License.
+[8.7.](#8.7) _Entire License_: This is the entire License between the Licensor and Licensee with respect to the claims released herein and that the consideration stated herein is the only consideration or compensation to be paid or exchanged between them for this License. This License cannot be modified or amended except in a writing signed by Licensor and Licensee.
 
-[8.8.](#8.8) _Entire License_: This is the entire License between the Licensor and Licensee with respect to the claims released herein and that the consideration stated herein is the only consideration or compensation to be paid or exchanged between them for this License. This License cannot be modified or amended except in a writing signed by Licensor and Licensee.
-
-[8.9.](#8.9) _Successors and Assigns_: This License shall be binding upon and inure to the benefit of the Licensor’s and Licensee’s respective heirs, successors, and assigns.
+[8.8.](#8.8) _Successors and Assigns_: This License shall be binding upon and inure to the benefit of the Licensor’s and Licensee’s respective heirs, successors, and assigns.
