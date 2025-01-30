@@ -96,8 +96,12 @@ impl Error for LinalgErr {}
 /// compact representation, which can be used to cheaply compute [determinant](LU::determinant)s,
 /// and [inverse](LU::inverse)s, or to [extract](LU::extract) the concrete factors of the
 /// decomposition, or [solve](LU::solve_square) linear systems of equations.
+///
+/// The lifetime parameter is the lifetime of the original [Array2] that [lu] computed the
+/// decompositon of. The function [lu] overwrites the content of that matrix, which is then used
+/// to store the compact representation mentioned above.
 #[derive(Debug, PartialEq)]
-pub struct LU<T> {
+pub struct LU<'a, T> {
     /// A representation of the permutation matrix `P` in terms of transpositions. That is, the
     /// actual permutation `P` applied to the rows of `A` is the following product of
     /// transpositions:
@@ -113,10 +117,10 @@ pub struct LU<T> {
     /// Furthermore, if `A` is square, the diagonal elements are the leading principal minors of
     /// `A` (thus the element in the lower right corner is the determinant), up to a sign flip,
     /// determined by the permutation. TODO: (How) is this correct? Research more precisely.
-    data: Array2<T>,
+    data: ArrayViewMut2<'a, T>,
 }
 
-impl<T> LU<T> {
+impl<'a, T> LU<'a, T> {
     /// Construct the four matrices of the fraction-free [LU] decomposition.
     ///
     /// Called on the result of `lu(A)`, this function returns `(P, L, d, U)` such that `P A = L
@@ -273,14 +277,15 @@ impl<T> LU<T> {
 
 /// Compute the fraction-free [LU] decomposition of an integer matrix.
 ///
-/// The matrix must be at least as wide as tall, and of full rank. Otherwise, this function fails,
+/// The input matrix must be at least as wide as tall, and of full rank. Otherwise, this function fails,
 /// returning [LinalgErr::LUMatrixTall] or [LinalgErr::LURankDeficient], respectively.
 ///
 /// [Div]isions performed by this function are exact (i.e. leave no remainder).
 ///
-/// This function takes ownership of its argument, which it overwrites, and which becomes part of
-/// the returned value.
-pub fn lu<T>(mut a: Array2<T>) -> Result<LU<T>, LinalgErr>
+/// The output is a [LU] decomposition, which wraps the argument array view `a`.
+/// In particular, the matrix that `a` is a view of will be modified, and its contents really only
+/// make sense if accessed through the functions on the returned [LU] value.
+pub fn lu<'a, T>(mut a: ArrayViewMut2<'a, T>) -> Result<LU<'a, T>, LinalgErr>
 where
     T: Zero + One + Sub<Output = T> + Div<Output = T> + Copy,
 {
@@ -409,7 +414,7 @@ where
     }
 }
 
-impl<T> LU<T> {
+impl<'a, T> LU<'a, T> {
     /// Forward substitution, solving `L D^(-1) y = b`. It assumed that dimensions match.
     fn forward(&self, b: &mut ArrayViewMut1<T>)
     where
@@ -456,17 +461,18 @@ mod tests {
 
     #[test]
     fn lu_errors() {
-        let tall = arr2(&[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]);
-        let e = lu(tall);
+        let mut tall = arr2(&[[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12]]);
+        let e = lu(tall.view_mut());
         assert_eq!(e, Err(LinalgErr::LUMatrixTall(4, 3)));
 
-        let deficient = arr2(&[[1, 2, 3], [4, 5, 6], [2, 4, 6]]);
-        let e = lu(deficient);
+        let mut deficient = arr2(&[[1, 2, 3], [4, 5, 6], [2, 4, 6]]);
+        let e = lu(deficient.view_mut());
         assert_eq!(e, Err(LinalgErr::LURankDeficient));
     }
 
     fn extract_recombine(a: Array2<i32>) {
-        let x = lu(a.clone()).unwrap();
+        let mut x_pre = a.clone();
+        let x = lu(x_pre.view_mut()).unwrap();
         let (p, l, mut d, u) = x.extract();
         let m = d.fold(1, |acc, new| acc * new);
         d = m / d; // this is an exact division
@@ -491,26 +497,24 @@ mod tests {
     fn determinant() {
         assert_eq!(
             -1,
-            lu(arr2(&[[0, 1], [1, 0]])).unwrap().determinant().unwrap()
+            lu(arr2(&[[0, 1], [1, 0]]).view_mut())
+                .unwrap()
+                .determinant()
+                .unwrap()
         );
         assert_eq!(
             6,
-            lu(arr2(&[[-1, -1, -1], [3, 3, 1], [3, 0, 3]]))
+            lu(arr2(&[[-1, -1, -1], [3, 3, 1], [3, 0, 3]]).view_mut())
                 .unwrap()
                 .determinant()
                 .unwrap()
         );
         assert_eq!(
             1638,
-            lu(arr2(&[
-                [-1, 5, -1, 7],
-                [9, 3, 3, 1],
-                [3, 0, -33, 1],
-                [0, 0, 0, 1]
-            ]))
-            .unwrap()
-            .determinant()
-            .unwrap()
+            lu(arr2(&[[-1, 5, -1, 7], [9, 3, 3, 1], [3, 0, -33, 1], [0, 0, 0, 1]]).view_mut())
+                .unwrap()
+                .determinant()
+                .unwrap()
         );
     }
 
@@ -524,7 +528,8 @@ mod tests {
     }
 
     fn solve_unsolve(a: Array2<i32>, b: Array1<i32>) {
-        let h = lu(a.clone()).unwrap();
+        let mut h_pre = a.clone();
+        let h = lu(h_pre.view_mut()).unwrap();
         let (d, x) = h.solve_square(b.clone()).unwrap();
         println!("d = {}\nx = {}", d, x);
         assert_eq!(a.dot(&x), d * b);
@@ -551,11 +556,11 @@ mod tests {
             [-10, 30, 5, 45],
             [1, 0, 0, 0],
         ]);
-        let (d, b) = lu(a.clone()).unwrap().inverse().unwrap();
+        let (d, b) = lu(a.clone().view_mut()).unwrap().inverse().unwrap();
         assert_eq!(b.dot(&a), Array2::from_diag_elem(4, d));
 
         let a = arr2(&[[81, -9, 24], [56, 4, 8], [-10, 30, 45]]);
-        let (d, b) = lu(a.clone()).unwrap().inverse().unwrap();
+        let (d, b) = lu(a.clone().view_mut()).unwrap().inverse().unwrap();
         assert_eq!(a.dot(&b), Array2::from_diag_elem(3, d));
     }
 }

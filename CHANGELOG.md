@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- made `LU` a wrapper around an array view. This allows reuse of the memory of its argument.
+
 ## [0.1.3] - 2024-04-15
 
 removed the copyleft restriction in the license
