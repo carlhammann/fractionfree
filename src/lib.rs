@@ -251,8 +251,8 @@ impl<'a, T> LU<'a, T> {
 
     /// Calculate the inverse of a square matrix.
     ///
-    /// If the input was obtained as `lu(A)`, this returns `(d, B)` such that `1/d * B` is
-    /// the inverse of `A`. In particular, `d` or `-d` will be the determinant of `A`.
+    /// If the input was obtained as `lu(A)`, this returns `(det, B)` such that `1/det * B` is
+    /// the inverse of `A`. In particular, `det` or `-det` will be the determinant of `A`.
     ///
     /// It might be useful to [normalise] the result before proceeding.
     pub fn inverse(&self) -> Result<(T, Array2<T>), LinalgErr>
@@ -260,18 +260,54 @@ impl<'a, T> LU<'a, T> {
         T: One + Zero + Copy + Sub<Output = T> + Div<Output = T> + AddAssign,
     {
         let a = &self.data;
-        let d = a.raw_dim();
-        let n = d[0];
-        if n != d[1] {
-            return Err(LinalgErr::NotSquare("inverse", n, d[1]));
+        let dim = a.raw_dim();
+        let n = dim[0];
+        if n != dim[1] {
+            return Err(LinalgErr::NotSquare("inverse", n, dim[1]));
         }
+
         let mut det = T::one();
         let mut inv = Array2::eye(n);
+        self.inverse_impl(false, &mut det, &mut inv.view_mut())?;
+        Ok((det, inv))
+    }
+
+    /// Like [LU::inverse], but mutating.
+    pub fn inverse_inplace(&self, det: &mut T, inv: &mut ArrayViewMut2<T>) -> Result<(), LinalgErr> 
+    where
+        T: One + Zero + Copy + Sub<Output = T> + Div<Output = T> + AddAssign, 
+    {
+        let a = &self.data;
+        let dim = a.raw_dim();
+        let n = dim[0];
+        if n != dim[1] {
+            return Err(LinalgErr::NotSquare("inverse_inplace", n, dim[1]));
+        }
+
+        self.inverse_impl(true, det, inv)
+    }
+    
+    /// internal: common implementation of inverse_inplace and inverse. Does not check that the
+    /// argument matrix is square.
+    fn inverse_impl(&self, initialise_inv_and_det: bool, det: &mut T, inv: &mut ArrayViewMut2<T>) -> Result<(), LinalgErr> 
+    where
+        T: One + Zero + Copy + Sub<Output = T> + Div<Output = T> + AddAssign, 
+    {
+        let a = &self.data;
+        let dim = a.raw_dim();
+        let n = dim[0];
+
+        if initialise_inv_and_det { 
+            *det = T::one();
+            inv.fill(T::zero());
+            inv.diag_mut().fill(T::one());
+        }
+
         for i in 0..n {
             let mut ei = inv.slice_mut(s![.., i]);
-            self.solve_square_inplace(&mut ei, &mut det)?;
+            self.solve_square_inplace(&mut ei, det)?;
         }
-        Ok((det, inv))
+        Ok(())
     }
 }
 

@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
+## [0.1.4] - 2025-02-20
+
 - made `LU` a wrapper around an array view. This allows reuse of the memory of its argument.
+- added an in-place matrix inversion function `inverse_inplace`.
 
 ## [0.1.3] - 2024-04-15
 
